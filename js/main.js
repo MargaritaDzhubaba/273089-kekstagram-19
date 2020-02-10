@@ -79,6 +79,7 @@ var formEditImage = document.querySelector('.img-upload__overlay');
 var fieldUploadImage = document.querySelector('#upload-file');
 var buttonCloseForm = document.querySelector('#upload-cancel');
 var body = document.querySelector('body');
+var inputHashtag = document.querySelector('input[name=hashtags]');
 
 var onPopupCloseByEscPress = function (evt) {
   if (evt.key === ESC_KEY) {
@@ -118,7 +119,32 @@ buttonCloseForm.addEventListener('click', function () {
   closePopup();
 });
 
+inputHashtag.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupCloseByEscPress);
+});
+
+inputHashtag.addEventListener('blur', function () {
+  document.addEventListener('keydown', onPopupCloseByEscPress);
+});
+
 fieldUploadImage.value = '';
+
+// Ловим событие на mouseup
+var effect = document.querySelector('.img-upload__effect-level');
+var effectPin = effect.querySelector('.effect-level__pin');
+
+effectPin.addEventListener('mouseup', function () {
+  var x = effectPin.offsetLeft; // Вычисляем положение ползунка относительно начала шкалы
+
+  var computedStyle = getComputedStyle(effectLine); // Получаем стили шкалы
+  var scaleWidth = parseInt(computedStyle.width, 10); // Узнаем длину шкалы
+
+  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в %
+
+  effectLevel.value = positionPinPercent; // Меняем value
+
+  effectDepth.style.width = positionPinPercent + '%'; // Заполняем шкалу на нужное количество %
+});
 
 // Изменение масштаба
 var STAP = 25;
@@ -154,13 +180,13 @@ controlBigger.addEventListener('click', function () {
 });
 
 // Наложение эффекта на изображение
-var effect = document.querySelector('.img-upload__effect-level');
+// var effect = document.querySelector('.img-upload__effect-level');
 var effectLevel = document.getElementsByTagName('input[name=effect-level]');
 var effectLine = effect.querySelector('.effect-level__line');
-var effectPin = effect.querySelector('.effect-level__pin');
+// var effectPin = effect.querySelector('.effect-level__pin');
 var effectDepth = effect.querySelector('.effect-level__depth');
 var effectRadios = document.querySelectorAll('.effects__radio');
-var uploadPreview = document.querySelector('.img-upload__preview');
+// var uploadPreview = document.querySelector('.img-upload__preview');
 // var uploadImage = document.querySelector('div.img-upload__preview img');
 
 for (var i = 0; i < effectRadios.length; i++) {
@@ -171,7 +197,6 @@ for (var i = 0; i < effectRadios.length; i++) {
     effectPin.style.left = '100%'; // - добавить ползунку стиль left 100%
     effectDepth.style.width = '100%'; // - добавить шкале 100% effect-levev__depth
     effectLevel.value = '100%'; // - в скрытый инпут положить значение 100
-    console.log(effectLevel);
 
     controlValue.value = '100%'; // - cбрасываем масштаб
     uploadImage.style.transform = 'scale(1)'; // - сбрасываем масштаб
@@ -181,7 +206,6 @@ for (var i = 0; i < effectRadios.length; i++) {
     var effectValue = evt.target.value; // - получаем value из event (marvin)
     uploadImage.classList.remove('effects__preview--' + effectValue); // !НЕ ЗНАЮ КАК СБРОСИТЬ КЛАССЫ!
     uploadImage.classList.add('effects__preview--' + effectValue); // - добавить класс 'effect__preview--' + 'effect-value'
-    console.log(uploadPreview);
 
     if (uploadImage.classList.contains('effects__preview--none')) {
       effectPin.classList.add('hidden'); // скрываем пин
@@ -190,38 +214,22 @@ for (var i = 0; i < effectRadios.length; i++) {
       effectPin.classList.remove('hidden'); // скрываем пин
       effectDepth.classList.remove('hidden');// - скрываем шкалу
     }
+
+    // Расчитываем насыщенность применяемого фильтра
+    var getValue = function (maxValue, minValue, neededValue) {
+      return (((maxValue - minValue) * neededValue) / 100) + minValue;
+    };
+    var effectFilter = Object.values(filters);
+    for (var j = 0; j < effectFilter.length; j++) {
+      var currentFilter = effectFilter[j];
+
+      var calculateValueDepth = getValue(currentFilter[j].max, currentFilter[j].min, effectLevel.value);
+      var resultFilterValue = currentFilter[j].type + '(' + calculateValueDepth + currentFilter[j].unit + ')';
+
+      uploadImage.style.filter = resultFilterValue;
+    }
   });
 }
-
-// Ловим событие на mouseup,
-effectPin.addEventListener('mouseup', function () {
-  var x = effectPin.offsetLeft; // Вычисляем положение ползунка относительно начала шкалы
-  console.log('Положение пина ' + x);
-
-  var computedStyle = getComputedStyle(effectLine); // Получаем стили шкалы
-  var scaleWidth = parseInt(computedStyle.width, 10); // Узнаем длину шкалы
-  console.log('Длина шкалы ' + scaleWidth);
-
-  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в %
-  console.log('Положение пина в % ' + positionPinPercent);
-
-  effectLevel.value = positionPinPercent; // Меняем value
-  console.log('В инпут меняем value на ' + effectLevel.value);
-
-  effectDepth.style.width = positionPinPercent + '%'; // Заполняем шкалу на нужное количество %
-  console.log('Шкала заполнена(ширина желтой шкалы) на ' + effectDepth.style.width);
-
-  // Расчитываем насыщенность применяемого фильтра
-  var getValue = function (maxValue, minValue, neededValue) {
-    return (((maxValue - minValue) * neededValue) / 100) + minValue;
-  };
-  var currentFilter = Object.values(filters); // !Вот тут у меня появляется доступ к массиву объектов, но не к самим объектам. Как до них добраться, чтобы работал current.Filter.min и т.д.!
-  var calculateValueDepth = getValue(currentFilter.max, currentFilter.marvin, positionPinPercent);
-  console.log('значение глубины эффекты ' + calculateValueDepth);
-  var resultFilterValue = currentFilter.type + '(' + calculateValueDepth + currentFilter.unit + ')';
-
-  uploadImage.style.filter = resultFilterValue;
-});
 
 // Фильтры
 var filters = {
@@ -256,3 +264,68 @@ var filters = {
     unit: ''
   }
 };
+
+// Валидация поля с хештегами
+var MAX_SYMBOLS = 20;
+var MAX_HASHTAGS = 5;
+
+// var inputHashtag = document.querySelector('.text__hashtags');
+
+inputHashtag.addEventListener('input', function (evt) {
+  var invalidMessage = [];
+  var target = evt.target;
+
+  var inputText = inputHashtag.value.toLowerCase().trim();
+
+  var inputArray = inputText.split(' ');
+
+  var isAllStartWithHash = inputArray.every(function (item) {
+    return item.indexOf('#') === 0;
+  });
+
+  var isOnlyLaticeHash = inputArray.every(function (item) {
+    return item === '#';
+  });
+
+  var isManySymbolsInHash = inputArray.some(function (item) {
+    return item.length > MAX_SYMBOLS;
+  });
+
+  var isNoSpaceInHash = inputArray.every(function (item) {
+    return item.indexOf('#', 1) >= 1;
+  });
+
+  var isSomeSpecialSymbols = inputArray.every(function (item) {
+    return item.slice(1).match(/^\w+$/);
+  });
+
+  if (inputArray.length === 0) {
+    return;
+  }
+
+  if (!isAllStartWithHash) {
+    invalidMessage.push('Хэштэг должен начинаться с символа #');
+  }
+
+  if (isOnlyLaticeHash) {
+    invalidMessage.push('Хэштэг не должен состоять только из "#"!');
+  }
+
+  if (inputArray.length > MAX_HASHTAGS) {
+    invalidMessage.push('Не более пяти хэштэгов!');
+  }
+
+  if (isManySymbolsInHash) {
+    invalidMessage.push('Максимальная длина одного хэш-тега 20 символов, включая решётку!');
+  }
+
+  if (isNoSpaceInHash) {
+    invalidMessage.push('Хэштэги должны разделяться пробелами!');
+  }
+
+  if (!isSomeSpecialSymbols) {
+    invalidMessage.push('Хэштэг не может содержать спецсимволы!');
+  }
+
+  target.setCustomValidity(invalidMessage.join('\n'));
+});
