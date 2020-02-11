@@ -5,6 +5,7 @@ var COMMENT_NAMES = ['Жерар', 'Иннокентий', 'Изольда', 'К
 var PICTURE_COUNT = 25;
 var AVATAR_NUMBER = 6;
 
+// Переменные для поиска шаблона
 var containerOfPictures = document.querySelector('.pictures');
 var similarPictureTemplate = document.querySelector('#picture')
   .content
@@ -20,7 +21,7 @@ var getRundomNumber = function (number) {
   return Math.floor(Math.random() * number);
 };
 
-var generatrComments = function (count) {
+var generateComments = function (count) {
   var comments = [];
   for (var i = 0; i < count; i++) {
     var randomCommentMessage = COMMENT_MESSAGES[getRundomNumber(COMMENT_MESSAGES.length)];// Комментирии к фотографии
@@ -43,7 +44,7 @@ var createPicturesData = function (pictureCount) {
       url: urlPicture,
       description: 'Описание фотографии ' + i,
       likes: randomLikes,
-      comments: generatrComments(generateRandomDiapason(i, pictureCount))
+      comments: generateComments(generateRandomDiapason(i, pictureCount))
     });
   }
   return result;
@@ -70,3 +71,261 @@ var createFragment = function (fragment) {
 var fragmentDocument = document.createDocumentFragment();
 
 createFragment(fragmentDocument);
+
+// Переменные для поиска блока загрузки фотографии
+var ESC_KEY = 'Escape';
+var ENTER_KEY = 'Enter';
+var formEditImage = document.querySelector('.img-upload__overlay');
+var fieldUploadImage = document.querySelector('#upload-file');
+var buttonCloseForm = document.querySelector('#upload-cancel');
+var body = document.querySelector('body');
+var inputHashtag = document.querySelector('input[name=hashtags]');
+
+var onPopupCloseByEscPress = function (evt) {
+  if (evt.key === ESC_KEY) {
+    closePopup();
+  }
+};
+
+fieldUploadImage.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    openPopup();
+  }
+});
+
+buttonCloseForm.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    closePopup();
+  }
+});
+
+var openPopup = function () {
+  formEditImage.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupCloseByEscPress);
+};
+
+var closePopup = function () {
+  formEditImage.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupCloseByEscPress);
+};
+
+fieldUploadImage.addEventListener('change', function () {
+  body.classList.add('modal-open');
+  openPopup();
+});
+
+buttonCloseForm.addEventListener('click', function () {
+  body.classList.remove('modal-open');
+  closePopup();
+});
+
+inputHashtag.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupCloseByEscPress);
+});
+
+inputHashtag.addEventListener('blur', function () {
+  document.addEventListener('keydown', onPopupCloseByEscPress);
+});
+
+fieldUploadImage.value = '';
+
+// Ловим событие на mouseup
+var effect = document.querySelector('.img-upload__effect-level');
+var effectPin = effect.querySelector('.effect-level__pin');
+
+effectPin.addEventListener('mouseup', function () {
+  var x = effectPin.offsetLeft; // Вычисляем положение ползунка относительно начала шкалы
+
+  var computedStyle = getComputedStyle(effectLine); // Получаем стили шкалы
+  var scaleWidth = parseInt(computedStyle.width, 10); // Узнаем длину шкалы
+
+  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в %
+
+  effectLevel.value = positionPinPercent; // Меняем value
+
+  effectDepth.style.width = positionPinPercent + '%'; // Заполняем шкалу на нужное количество %
+});
+
+// Изменение масштаба
+var STAP = 25;
+var MIN = 25;
+var MAX = 100;
+
+var controlSmaller = document.querySelector('.scale__control--smaller');
+var controlBigger = document.querySelector('.scale__control--bigger');
+var controlValue = document.querySelector('.scale__control--value');
+var uploadImage = document.querySelector('div.img-upload__preview img');
+
+controlValue.value = '100%';
+uploadImage.style.transform = 'scale(1)';
+
+controlSmaller.addEventListener('click', function () {
+  if ((parseInt(controlValue.value, 10) - STAP) < MIN) {
+    uploadImage.style.transform = 'scale(' + MIN / 100 + ')';
+    controlValue.value = '25%';
+  } else {
+    uploadImage.style.transform = 'scale(' + ((parseInt(controlValue.value, 10) - STAP) / 100) + ')';
+    controlValue.value = (parseInt(controlValue.value, 10) - STAP) + '%';
+  }
+});
+
+controlBigger.addEventListener('click', function () {
+  if ((parseInt(controlValue.value, 10) + STAP) >= MAX) {
+    uploadImage.style.transform = 'scale(' + 1 + ')';
+    controlValue.value = MAX + '%';
+  } else {
+    uploadImage.style.transform = 'scale(' + ((parseInt(controlValue.value, 10) + STAP) / 100) + ')';
+    controlValue.value = (parseInt(controlValue.value, 10) + STAP) + '%';
+  }
+});
+
+// Наложение эффекта на изображение
+// var effect = document.querySelector('.img-upload__effect-level');
+var effectLevel = document.getElementsByTagName('input[name=effect-level]');
+var effectLine = effect.querySelector('.effect-level__line');
+// var effectPin = effect.querySelector('.effect-level__pin');
+var effectDepth = effect.querySelector('.effect-level__depth');
+var effectRadios = document.querySelectorAll('.effects__radio');
+// var uploadPreview = document.querySelector('.img-upload__preview');
+// var uploadImage = document.querySelector('div.img-upload__preview img');
+
+for (var i = 0; i < effectRadios.length; i++) {
+  var radio = effectRadios[i];
+
+  radio.addEventListener('change', function (evt) {
+    // Сбрасываем ползунок в 100%
+    effectPin.style.left = '100%'; // - добавить ползунку стиль left 100%
+    effectDepth.style.width = '100%'; // - добавить шкале 100% effect-levev__depth
+    effectLevel.value = '100%'; // - в скрытый инпут положить значение 100
+
+    controlValue.value = '100%'; // - cбрасываем масштаб
+    uploadImage.style.transform = 'scale(1)'; // - сбрасываем масштаб
+
+
+    // добавление эффекта
+    var effectValue = evt.target.value; // - получаем value из event (marvin)
+    uploadImage.classList.remove('effects__preview--' + effectValue); // !НЕ ЗНАЮ КАК СБРОСИТЬ КЛАССЫ!
+    uploadImage.classList.add('effects__preview--' + effectValue); // - добавить класс 'effect__preview--' + 'effect-value'
+
+    if (uploadImage.classList.contains('effects__preview--none')) {
+      effectPin.classList.add('hidden'); // скрываем пин
+      effectDepth.classList.add('hidden'); // - скрываем шкалу
+    } else {
+      effectPin.classList.remove('hidden'); // скрываем пин
+      effectDepth.classList.remove('hidden');// - скрываем шкалу
+    }
+
+    // Расчитываем насыщенность применяемого фильтра
+    var getValue = function (maxValue, minValue, neededValue) {
+      return (((maxValue - minValue) * neededValue) / 100) + minValue;
+    };
+    var effectFilter = Object.values(filters);
+    for (var j = 0; j < effectFilter.length; j++) {
+      var currentFilter = effectFilter[j];
+
+      var calculateValueDepth = getValue(currentFilter[j].max, currentFilter[j].min, effectLevel.value);
+      var resultFilterValue = currentFilter[j].type + '(' + calculateValueDepth + currentFilter[j].unit + ')';
+
+      uploadImage.style.filter = resultFilterValue;
+    }
+  });
+}
+
+// Фильтры
+var filters = {
+  chrome: {
+    type: 'grayscale',
+    min: 0,
+    max: 1,
+    unit: ''
+  },
+  sepia: {
+    type: 'sepia',
+    min: 0,
+    max: 1,
+    unit: ''
+  },
+  marvin: {
+    type: 'invert',
+    min: 0,
+    max: 100,
+    unit: '%'
+  },
+  phobos: {
+    type: 'blur',
+    min: 0,
+    max: 3,
+    unit: 'px'
+  },
+  heat: {
+    type: 'brightness',
+    min: 1,
+    max: 3,
+    unit: ''
+  }
+};
+
+// Валидация поля с хештегами
+var MAX_SYMBOLS = 20;
+var MAX_HASHTAGS = 5;
+
+// var inputHashtag = document.querySelector('.text__hashtags');
+
+inputHashtag.addEventListener('input', function (evt) {
+  var invalidMessage = [];
+  var target = evt.target;
+
+  var inputText = inputHashtag.value.toLowerCase().trim();
+
+  var inputArray = inputText.split(' ');
+
+  var isAllStartWithHash = inputArray.every(function (item) {
+    return item.indexOf('#') === 0;
+  });
+
+  var isOnlyLaticeHash = inputArray.every(function (item) {
+    return item === '#';
+  });
+
+  var isManySymbolsInHash = inputArray.some(function (item) {
+    return item.length > MAX_SYMBOLS;
+  });
+
+  var isNoSpaceInHash = inputArray.every(function (item) {
+    return item.indexOf('#', 1) >= 1;
+  });
+
+  var isSomeSpecialSymbols = inputArray.every(function (item) {
+    return item.slice(1).match(/^\w+$/);
+  });
+
+  if (inputArray.length === 0) {
+    return;
+  }
+
+  if (!isAllStartWithHash) {
+    invalidMessage.push('Хэштэг должен начинаться с символа #');
+  }
+
+  if (isOnlyLaticeHash) {
+    invalidMessage.push('Хэштэг не должен состоять только из "#"!');
+  }
+
+  if (inputArray.length > MAX_HASHTAGS) {
+    invalidMessage.push('Не более пяти хэштэгов!');
+  }
+
+  if (isManySymbolsInHash) {
+    invalidMessage.push('Максимальная длина одного хэш-тега 20 символов, включая решётку!');
+  }
+
+  if (isNoSpaceInHash) {
+    invalidMessage.push('Хэштэги должны разделяться пробелами!');
+  }
+
+  if (!isSomeSpecialSymbols) {
+    invalidMessage.push('Хэштэг не может содержать спецсимволы!');
+  }
+
+  target.setCustomValidity(invalidMessage.join('\n'));
+});
