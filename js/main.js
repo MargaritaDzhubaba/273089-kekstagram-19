@@ -131,6 +131,9 @@ fieldUploadImage.value = '';
 
 // Ловим событие на mouseup
 var effectDirectory = document.querySelector('.img-upload__effect-level');
+var effectLevel = document.getElementsByTagName('input[name=effect-level]');
+var effectLine = effectDirectory.querySelector('.effect-level__line');
+var effectDepth = effectDirectory.querySelector('.effect-level__depth');
 var effectPin = effectDirectory.querySelector('.effect-level__pin');
 // var effectsList = document.querySelector('.effects__list');
 // var selectedEffect = effectsList.querySelector('.effects__radio:checked').value;
@@ -140,8 +143,8 @@ effectPin.addEventListener('mouseup', function () {
   var computedStyle = getComputedStyle(effectLine); // Получаем стили шкалы
   var scaleWidth = parseInt(computedStyle.width, 10); // Узнаем длину шкалы
 
-  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в %
-  effectLevel.value = positionPinPercent; // Меняем value
+  effectLevel.value = positionPinPercent;
+  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в % b меняем value
 
   effectDepth.style.width = positionPinPercent + '%'; // Заполняем шкалу на нужное количество %
 });
@@ -181,11 +184,6 @@ controlBigger.addEventListener('click', function () {
 });
 
 // Наложение эффекта на изображение
-// var effectDirectory = document.querySelector('.img-upload__effect-level');
-var effectLevel = document.getElementsByTagName('input[name=effect-level]');
-var effectLine = effectDirectory.querySelector('.effect-level__line');
-// var effectPin = effectDirectory.querySelector('.effect-level__pin');
-var effectDepth = effectDirectory.querySelector('.effect-level__depth');
 var effectRadios = document.querySelectorAll('.effects__radio');
 // var uploadPreview = document.querySelector('.img-upload__preview');
 // var uploadImage = document.querySelector('div.img-upload__preview img');
@@ -211,14 +209,13 @@ var changeEffect = function (effectValue) {
   zoomImage(100);
 
   uploadImage.className = '';
-  uploadImage.classList.add('effects__preview--' + effectValue); // - добавить класс 'effect__preview--' + 'effect-value'
+  uploadImage.classList.add('effects__preview--' + effectValue);
 
   if (effectValue === 'none') {
-    effectPin.classList.add('hidden');
-    effectDepth.classList.add('hidden');
+    effectDirectory.classList.add('hidden');
+    uploadImage.style.filter = '';
   } else {
-    effectPin.classList.remove('hidden');
-    effectDepth.classList.remove('hidden');
+    effectDirectory.classList.remove('hidden');
   }
   setImageFilter(effectValue, 100);
 };
@@ -233,12 +230,6 @@ for (var i = 0; i < effectRadios.length; i++) {
 
 // Фильтры
 var filters = {
-  none: {
-    type: '',
-    min: '',
-    max: '',
-    unit: ''
-  },
   chrome: {
     type: 'grayscale',
     min: 0,
