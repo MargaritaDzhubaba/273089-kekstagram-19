@@ -42,7 +42,7 @@ var createPicturesData = function (pictureCount) {
     var randomLikes = generateRandomDiapason(15, 200);// Генерируем рандомное количество лайков
     result.push({
       url: urlPicture,
-      description: 'Описание фотографии ' + i,
+      description: 'Описание фотографии ',
       likes: randomLikes,
       comments: generateComments(generateRandomDiapason(i, pictureCount))
     });
@@ -130,24 +130,27 @@ inputHashtag.addEventListener('blur', function () {
 fieldUploadImage.value = '';
 
 // Ловим событие на mouseup
-var effect = document.querySelector('.img-upload__effect-level');
-var effectPin = effect.querySelector('.effect-level__pin');
+var effectDirectory = document.querySelector('.img-upload__effect-level');
+var effectLevel = document.getElementsByTagName('input[name=effect-level]');
+var effectLine = effectDirectory.querySelector('.effect-level__line');
+var effectDepth = effectDirectory.querySelector('.effect-level__depth');
+var effectPin = effectDirectory.querySelector('.effect-level__pin');
+// var effectsList = document.querySelector('.effects__list');
+// var selectedEffect = effectsList.querySelector('.effects__radio:checked').value;
 
 effectPin.addEventListener('mouseup', function () {
   var x = effectPin.offsetLeft; // Вычисляем положение ползунка относительно начала шкалы
-
   var computedStyle = getComputedStyle(effectLine); // Получаем стили шкалы
   var scaleWidth = parseInt(computedStyle.width, 10); // Узнаем длину шкалы
 
-  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в %
-
-  effectLevel.value = positionPinPercent; // Меняем value
+  effectLevel.value = positionPinPercent;
+  var positionPinPercent = (Math.floor((x * 100) / scaleWidth)); // Определяем положение ползунка в % b меняем value
 
   effectDepth.style.width = positionPinPercent + '%'; // Заполняем шкалу на нужное количество %
 });
 
 // Изменение масштаба
-var STAP = 25;
+var STEP = 25;
 var MIN = 25;
 var MAX = 100;
 
@@ -156,78 +159,72 @@ var controlBigger = document.querySelector('.scale__control--bigger');
 var controlValue = document.querySelector('.scale__control--value');
 var uploadImage = document.querySelector('div.img-upload__preview img');
 
-controlValue.value = '100%';
-uploadImage.style.transform = 'scale(1)';
-
-controlSmaller.addEventListener('click', function () {
-  if ((parseInt(controlValue.value, 10) - STAP) < MIN) {
+var zoomImage = function (zoomValue, direction) {
+  if (direction === 'zoomOut' && zoomValue < MIN) {
     uploadImage.style.transform = 'scale(' + MIN / 100 + ')';
     controlValue.value = '25%';
-  } else {
-    uploadImage.style.transform = 'scale(' + ((parseInt(controlValue.value, 10) - STAP) / 100) + ')';
-    controlValue.value = (parseInt(controlValue.value, 10) - STAP) + '%';
+    return;
   }
-});
-
-controlBigger.addEventListener('click', function () {
-  if ((parseInt(controlValue.value, 10) + STAP) >= MAX) {
+  if (direction === 'zoomIn' && zoomValue >= MAX) {
     uploadImage.style.transform = 'scale(' + 1 + ')';
     controlValue.value = MAX + '%';
-  } else {
-    uploadImage.style.transform = 'scale(' + ((parseInt(controlValue.value, 10) + STAP) / 100) + ')';
-    controlValue.value = (parseInt(controlValue.value, 10) + STAP) + '%';
+    return;
   }
+  uploadImage.style.transform = 'scale(' + zoomValue / 100 + ')';
+  controlValue.value = zoomValue + '%';
+};
+
+zoomImage(100);
+
+controlSmaller.addEventListener('click', function () {
+  zoomImage((parseInt(controlValue.value, 10) - STEP), 'zoomOut');
+});
+controlBigger.addEventListener('click', function () {
+  zoomImage((parseInt(controlValue.value, 10) + STEP), 'zoomIn');
 });
 
 // Наложение эффекта на изображение
-// var effect = document.querySelector('.img-upload__effect-level');
-var effectLevel = document.getElementsByTagName('input[name=effect-level]');
-var effectLine = effect.querySelector('.effect-level__line');
-// var effectPin = effect.querySelector('.effect-level__pin');
-var effectDepth = effect.querySelector('.effect-level__depth');
 var effectRadios = document.querySelectorAll('.effects__radio');
 // var uploadPreview = document.querySelector('.img-upload__preview');
 // var uploadImage = document.querySelector('div.img-upload__preview img');
+
+// Расчитываем насыщенность применяемого фильтра
+var getValue = function (maxValue, minValue, neededValue) {
+  return (((maxValue - minValue) * neededValue) / 100) + minValue;
+};
+
+var setImageFilter = function (effect, value) {
+  var currentFilter = filters[effect];
+  var calculateValueDepth = getValue(currentFilter.max, currentFilter.min, value);
+  var resultFilterValue = currentFilter.type + '(' + calculateValueDepth + currentFilter.unit + ')';
+
+  uploadImage.style.filter = resultFilterValue;
+};
+
+var changeEffect = function (effectValue) {
+  effectPin.style.left = '100%'; // - добавить ползунку стиль left 100%
+  effectDepth.style.width = '100%'; // - добавить шкале 100% effect-levev__depth
+  effectLevel.value = '100'; // - в скрытый инпут положить значение 100
+
+  zoomImage(100);
+
+  uploadImage.className = '';
+  uploadImage.classList.add('effects__preview--' + effectValue);
+
+  if (effectValue === 'none') {
+    effectDirectory.classList.add('hidden');
+    uploadImage.style.filter = '';
+  } else {
+    effectDirectory.classList.remove('hidden');
+  }
+  setImageFilter(effectValue, 100);
+};
 
 for (var i = 0; i < effectRadios.length; i++) {
   var radio = effectRadios[i];
 
   radio.addEventListener('change', function (evt) {
-    // Сбрасываем ползунок в 100%
-    effectPin.style.left = '100%'; // - добавить ползунку стиль left 100%
-    effectDepth.style.width = '100%'; // - добавить шкале 100% effect-levev__depth
-    effectLevel.value = '100%'; // - в скрытый инпут положить значение 100
-
-    controlValue.value = '100%'; // - cбрасываем масштаб
-    uploadImage.style.transform = 'scale(1)'; // - сбрасываем масштаб
-
-
-    // добавление эффекта
-    var effectValue = evt.target.value; // - получаем value из event (marvin)
-    uploadImage.classList.remove('effects__preview--' + effectValue); // !НЕ ЗНАЮ КАК СБРОСИТЬ КЛАССЫ!
-    uploadImage.classList.add('effects__preview--' + effectValue); // - добавить класс 'effect__preview--' + 'effect-value'
-
-    if (uploadImage.classList.contains('effects__preview--none')) {
-      effectPin.classList.add('hidden'); // скрываем пин
-      effectDepth.classList.add('hidden'); // - скрываем шкалу
-    } else {
-      effectPin.classList.remove('hidden'); // скрываем пин
-      effectDepth.classList.remove('hidden');// - скрываем шкалу
-    }
-
-    // Расчитываем насыщенность применяемого фильтра
-    var getValue = function (maxValue, minValue, neededValue) {
-      return (((maxValue - minValue) * neededValue) / 100) + minValue;
-    };
-    var effectFilter = Object.values(filters);
-    for (var j = 0; j < effectFilter.length; j++) {
-      var currentFilter = effectFilter[j];
-
-      var calculateValueDepth = getValue(currentFilter[j].max, currentFilter[j].min, effectLevel.value);
-      var resultFilterValue = currentFilter[j].type + '(' + calculateValueDepth + currentFilter[j].unit + ')';
-
-      uploadImage.style.filter = resultFilterValue;
-    }
+    changeEffect(evt.target.value);
   });
 }
 
@@ -278,6 +275,11 @@ inputHashtag.addEventListener('input', function (evt) {
   var inputText = inputHashtag.value.toLowerCase().trim();
 
   var inputArray = inputText.split(' ');
+
+  if (!inputText.length) {
+    target.setCustomValidity('');
+    return;
+  }
 
   var isAllStartWithHash = inputArray.every(function (item) {
     return item.indexOf('#') === 0;
