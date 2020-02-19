@@ -2,6 +2,7 @@
 
 // openingClosing.js
 (function () {
+  var DEFAULT_ZOOM_VALUE = 100;
   var formEditImage = document.querySelector('.img-upload__overlay');
   var fieldUploadImage = document.querySelector('#upload-file');
   var buttonCloseForm = document.querySelector('#upload-cancel');
@@ -34,7 +35,7 @@
     document.addEventListener('keydown', onPopupCloseByEscPress);
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
-    window.scale.zoomImage(100);
+    window.scale(DEFAULT_ZOOM_VALUE);
   };
 
   var closePopup = function () {

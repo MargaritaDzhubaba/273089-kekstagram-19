@@ -14,21 +14,18 @@
   var uploadImage = document.querySelector('div.img-upload__preview img');
 
   var zoomImage = function (zoomValue, direction) {
+    var innerValue = zoomValue;
     if (direction === 'zoomOut' && zoomValue < MIN) {
-      uploadImage.style.transform = 'scale(' + MIN / 100 + ')';
-      controlValue.value = '25%';
-      return;
+      innerValue = MIN;
     }
     if (direction === 'zoomIn' && zoomValue >= MAX) {
-      uploadImage.style.transform = 'scale(' + 1 + ')';
-      controlValue.value = MAX + '%';
-      return;
+      innerValue = MAX;
     }
-    uploadImage.style.transform = 'scale(' + zoomValue / 100 + ')';
-    controlValue.value = zoomValue + '%';
+    uploadImage.style.transform = 'scale(' + innerValue / 100 + ')';
+    controlValue.value = innerValue + '%';
   };
 
-  zoomImage(100);
+  zoomImage(MAX);
 
   controlSmaller.addEventListener('click', function () {
     zoomImage((parseInt(controlValue.value, 10) - STEP), 'zoomOut');
@@ -37,8 +34,5 @@
     zoomImage((parseInt(controlValue.value, 10) + STEP), 'zoomIn');
   });
 
-  window.scale = {
-    zoomImage: zoomImage
-  };
-
+  window.scale = zoomImage;
 })();
