@@ -17,8 +17,9 @@
     for (var i = 0; i < count; i++) {
       var randomCommentMessage = COMMENT_MESSAGES[window.util.getRundomNumber(COMMENT_MESSAGES.length)];// Комментирии к фотографии
       var randomCommentNames = COMMENT_NAMES[window.util.getRundomNumber(COMMENT_NAMES.length)];
+      var randomCommentAvatar = 'img/avatar-' + window.util.generateRandomDiapason(1, AVATAR_NUMBER) + '.svg';
       comments.push({
-        avatar: 'img/avatar-' + window.util.generateRandomDiapason(1, AVATAR_NUMBER) + '.svg',
+        avatar: randomCommentAvatar,
         message: randomCommentMessage,
         name: randomCommentNames
       });
@@ -46,10 +47,15 @@
 
   var renderPicture = function (picture) {
     var pictureElement = similarPictureTemplate.cloneNode(true);
-    pictureElement.dataset.id = picture.id;
-    pictureElement.querySelector('.picture__img').src = picture.url;
-    pictureElement.querySelector('.picture__likes').textContent = picture.likes;
-    pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
+    var pictureImg = pictureElement.querySelector('.picture__img');
+    var pictureComments = pictureElement.querySelector('.picture__comments');
+    var pictureLikes = pictureElement.querySelector('.picture__likes');
+
+    pictureImg.src = picture.url;
+    pictureLikes.textContent = picture.likes;
+    pictureComments.textContent = picture.comments.length;
+    pictureImg.dataset.id = picture.id;
+
     return pictureElement;
   };
 
@@ -63,4 +69,26 @@
   var fragmentDocument = document.createDocumentFragment();
 
   createFragment(fragmentDocument);
+
+  var newComments = document.querySelector('.social__comments');
+  var newComment = newComments.querySelector('.social__comment');
+
+  var renderComment = function (picture) {
+    var commentElement = newComment.cloneNode(true);
+
+    var socialCommentImg = newComments.querySelector('.social__picture');
+    var socialText = newComments.querySelector('.social__text');
+
+    socialCommentImg.src = picture.avatar;
+    socialCommentImg.alt = picture.name;
+    socialText.textContent = picture.message;
+
+    return commentElement;
+  };
+
+  window.pictures = {
+    createPicturesData: createPicturesData,
+    renderComment: renderComment,
+    pictures: pictures
+  };
 })();
