@@ -57,4 +57,13 @@
   });
 
   fieldUploadImage.value = '';
+
+  // var form = document.querySelector('.img-upload__form');
+
+  // form.addEventListener('submit', function (evt) {
+  //  window.upload(new FormData(form), function (response) {
+  //    formEditImage.classList.add('hidden');
+  //  });
+  //  evt.preventDefault();
+  // });
 })();

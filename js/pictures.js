@@ -7,6 +7,7 @@
   var PICTURE_COUNT = 25;
   var AVATAR_NUMBER = 6;
 
+  // шаблон template в документе
   var containerOfPictures = document.querySelector('.pictures');
   var similarPictureTemplate = document.querySelector('#picture')
     .content
@@ -47,6 +48,7 @@
 
   var renderPicture = function (picture) {
     var pictureElement = similarPictureTemplate.cloneNode(true);
+
     var pictureImg = pictureElement.querySelector('.picture__img');
     var pictureComments = pictureElement.querySelector('.picture__comments');
     var pictureLikes = pictureElement.querySelector('.picture__likes');
@@ -59,7 +61,7 @@
     return pictureElement;
   };
 
-  var createFragment = function (fragment) {
+  var onSuccess = function (fragment) {
     for (var i = 0; i < pictures.length; i++) {
       fragment.appendChild(renderPicture(pictures[i]));
     }
@@ -68,23 +70,42 @@
 
   var fragmentDocument = document.createDocumentFragment();
 
-  createFragment(fragmentDocument);
+  onSuccess(fragmentDocument);
 
   var newComments = document.querySelector('.social__comments');
   var newComment = newComments.querySelector('.social__comment');
 
-  var renderComment = function (picture) {
+  var renderComment = function (comment) {
     var commentElement = newComment.cloneNode(true);
 
     var socialCommentImg = newComments.querySelector('.social__picture');
     var socialText = newComments.querySelector('.social__text');
 
-    socialCommentImg.src = picture.avatar;
-    socialCommentImg.alt = picture.name;
-    socialText.textContent = picture.message;
+    socialCommentImg.src = comment.avatar;
+    socialCommentImg.alt = comment.name;
+    socialText.textContent = comment.message;
 
     return commentElement;
   };
+
+  // Так ничего не получилось))
+  // var onSuccess = function (data) {
+  //  createFragment(data);
+  // };
+
+  var onError = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  window.load(onSuccess, onError);
 
   window.pictures = {
     createPicturesData: createPicturesData,
