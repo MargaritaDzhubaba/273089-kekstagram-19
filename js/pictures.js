@@ -2,49 +2,11 @@
 
 // pictures.js
 (function () {
-  var COMMENT_MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
-  var COMMENT_NAMES = ['Жерар', 'Иннокентий', 'Изольда', 'Клара', 'Регина', 'Йозеф'];
-  var PICTURE_COUNT = 25;
-  var AVATAR_NUMBER = 6;
 
-  // шаблон template в документе
-  var containerOfPictures = document.querySelector('.pictures');
+  // var containerOfPictures = document.querySelector('.pictures');
   var similarPictureTemplate = document.querySelector('#picture')
     .content
     .querySelector('.picture');
-
-  var generateComments = function (count) {
-    var comments = [];
-    for (var i = 0; i < count; i++) {
-      var randomCommentMessage = COMMENT_MESSAGES[window.util.getRundomNumber(COMMENT_MESSAGES.length)];// Комментирии к фотографии
-      var randomCommentNames = COMMENT_NAMES[window.util.getRundomNumber(COMMENT_NAMES.length)];
-      var randomCommentAvatar = 'img/avatar-' + window.util.generateRandomDiapason(1, AVATAR_NUMBER) + '.svg';
-      comments.push({
-        avatar: randomCommentAvatar,
-        message: randomCommentMessage,
-        name: randomCommentNames
-      });
-    }
-    return comments;
-  };
-
-  var createPicturesData = function (pictureCount) {
-    var result = [];
-    for (var i = 0; i < pictureCount; i++) {
-      var urlPicture = 'photos/' + window.util.generateRandomDiapason(1, pictureCount) + '.jpg';// Находим адрес фото
-      var randomLikes = window.util.generateRandomDiapason(15, 200);// Генерируем рандомное количество лайков
-      result.push({
-        id: i,
-        url: urlPicture,
-        description: 'Описание фотографии ',
-        likes: randomLikes,
-        comments: generateComments(window.util.generateRandomDiapason(i, pictureCount))
-      });
-    }
-    return result;
-  };
-
-  var pictures = createPicturesData(PICTURE_COUNT);
 
   var renderPicture = function (picture) {
     var pictureElement = similarPictureTemplate.cloneNode(true);
@@ -61,16 +23,15 @@
     return pictureElement;
   };
 
-  var onSuccess = function (fragment) {
-    for (var i = 0; i < pictures.length; i++) {
-      fragment.appendChild(renderPicture(pictures[i]));
+  var createFragment = function (photos) {
+    var containerOfPictures = document.querySelector('.pictures');
+    var fragment = document.createDocumentFragment();
+
+    for (var i = 0; i < photos.length; i++) {
+      fragment.appendChild(renderPicture(photos[i]));
     }
     return containerOfPictures.appendChild(fragment);
   };
-
-  var fragmentDocument = document.createDocumentFragment();
-
-  onSuccess(fragmentDocument);
 
   var newComments = document.querySelector('.social__comments');
   var newComment = newComments.querySelector('.social__comment');
@@ -88,28 +49,40 @@
     return commentElement;
   };
 
-  // Так ничего не получилось))
-  // var onSuccess = function (data) {
-  //  createFragment(data);
-  // };
+  var onSuccess = function (data) {
+    createFragment(data);
+
+    var gallery = document.querySelectorAll('a.picture');
+
+    for (var i = 0; i < gallery.length; i++) {
+      (function (element) {
+        gallery[i].addEventListener('click', function () {
+          window.prewiew(element);
+        });
+      })(data[i]);
+    }
+  };
 
   var onError = function (errorMessage) {
     var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style = 'z-index: 100; margin: 0 auto; padding: 10px; text-align: center; background-color: tomato;';
     node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
+    node.style.left = '0';
+    node.style.right = '0';
+    node.style.fontSize = '25px';
 
     node.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', node);
+
+    node.addEventListener('click', function () {
+      node.remove();
+    });
   };
 
-  window.load(onSuccess, onError);
+  window.upload('', onSuccess, onError, 'GET', 'https://js.dump.academy/kekstagram/data');
 
   window.pictures = {
-    createPicturesData: createPicturesData,
-    renderComment: renderComment,
-    pictures: pictures
+    renderPicture: renderPicture,
+    renderComment: renderComment
   };
 })();
