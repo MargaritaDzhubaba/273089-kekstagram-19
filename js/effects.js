@@ -7,7 +7,7 @@
   var EMPTY_FILTER = 'none';
   var uploadImage = document.querySelector('div.img-upload__preview img');
   var effectDirectory = document.querySelector('.img-upload__effect-level');
-  var effectLevel = effectDirectory.getElementsByTagName('input[name=effect-level]');
+  var effectLevel = document.querySelector('.effect-level__value');
   var effectLine = effectDirectory.querySelector('.effect-level__line');
   var effectDepth = effectDirectory.querySelector('.effect-level__depth');
   var effectPin = effectDirectory.querySelector('.effect-level__pin');
