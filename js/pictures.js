@@ -18,19 +18,20 @@
     pictureImg.src = picture.url;
     pictureLikes.textContent = picture.likes;
     pictureComments.textContent = picture.comments.length;
-    pictureImg.dataset.id = picture.id;
+    pictureElement.dataset.id = picture.id;
 
     return pictureElement;
   };
 
-  var createFragment = function (photos) {
+  var renderPhotos = function (photos) {
     var containerOfPictures = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
       fragment.appendChild(renderPicture(photos[i]));
     }
-    return containerOfPictures.appendChild(fragment);
+
+    containerOfPictures.appendChild(fragment);
   };
 
   var newComments = document.querySelector('.social__comments');
@@ -39,28 +40,21 @@
   var renderComment = function (comment) {
     var commentElement = newComment.cloneNode(true);
 
-    var socialCommentImg = newComments.querySelector('.social__picture');
-    var socialText = newComments.querySelector('.social__text');
+    var socialCommentImg = commentElement.querySelector('.social__picture');
+    var socialText = commentElement.querySelector('.social__text');
 
     socialCommentImg.src = comment.avatar;
     socialCommentImg.alt = comment.name;
     socialText.textContent = comment.message;
-
     return commentElement;
   };
 
   var onSuccess = function (data) {
-    createFragment(data);
-
-    var gallery = document.querySelectorAll('a.picture');
-
-    for (var i = 0; i < gallery.length; i++) {
-      (function (element) {
-        gallery[i].addEventListener('click', function () {
-          window.prewiew(element);
-        });
-      })(data[i]);
-    }
+    data.forEach(function (photo, index) {
+      photo.id = index;
+    });
+    window.pictures.photosData = data;
+    renderPhotos(data);
   };
 
   var onError = function (errorMessage) {
@@ -79,7 +73,7 @@
     });
   };
 
-  window.upload('', onSuccess, onError, 'GET', 'https://js.dump.academy/kekstagram/data');
+  window.load('', onSuccess, onError, 'GET', 'https://js.dump.academy/kekstagram/data');
 
   window.pictures = {
     renderPicture: renderPicture,
