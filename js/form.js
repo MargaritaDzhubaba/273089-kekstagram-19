@@ -42,8 +42,7 @@
     formEditImage.classList.add('hidden');
     body.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupCloseByEscPress);
-    inputHashtag.value = '';
-    textDescription.value = '';
+    form.reset();
   };
 
   fieldUploadImage.addEventListener('change', function () {
@@ -59,7 +58,9 @@
   fieldUploadImage.value = '';
 
   var main = document.querySelector('main');
-  var form = document.querySelector('.img-upload__form');
+  var form = main.querySelector('.img-upload__form');
+  var submitButton = main.querySelector('.img-upload__submit');
+
   var successTemplate = document.querySelector('#success')
     .content
     .querySelector('.success');
@@ -70,7 +71,9 @@
   var onSuccess = function () {
     formEditImage.classList.add('hidden');
     var success = successTemplate.cloneNode(true);
+    form.reset();
     main.appendChild(success);
+    submitButton.disabled = false;
     success.querySelector('.success__button').addEventListener('click', function () {
       textDescription.value = '';
       inputHashtag.value = '';
@@ -81,7 +84,9 @@
   var onError = function () {
     formEditImage.classList.add('hidden');
     var error = errorTemplate.cloneNode(true);
+    form.reset();
     main.appendChild(error);
+    submitButton.disabled = false;
     error.querySelector('.error__button').addEventListener('click', function () {
       textDescription.value = '';
       inputHashtag.value = '';
@@ -90,7 +95,8 @@
   };
 
   form.addEventListener('submit', function (e) {
-    window.upload(new FormData(form), onSuccess, onError, 'POST', 'https://js.dump.academy/kekstagram');
+    submitButton.disabled = true;
+    window.load(new FormData(form), onSuccess, onError, 'POST', 'https://js.dump.academy/kekstagram');
     e.preventDefault();
   });
 
