@@ -8,13 +8,12 @@
   var bigPicture = document.querySelector('.big-picture');
   var bigPictureCancel = document.querySelector('.big-picture__cancel');
   var inputComment = document.querySelector('.social__footer-text');
-  var socialComments = document.querySelector('.social__comments');
-
 
   var showBigPicture = function (item) {
     var bigPictureImg = bigPicture.querySelector('img');
     var likesCount = bigPicture.querySelector('.likes-count');
     var commentsCount = bigPicture.querySelector('.comments-count');
+    var socialComments = bigPicture.querySelector('.social__comments');
     var socialCaption = document.querySelector('.social__caption');
     var socialCommentCount = document.querySelector('.social__comment-count');
     var commentsLoader = document.querySelector('.comments-loader');
@@ -55,6 +54,48 @@
       closePopup();
     }
   };
+
+  var containerOfPictures = document.querySelector('.pictures');
+
+  containerOfPictures.addEventListener('click', function (evt) {
+    var target = evt.target;
+    var isClickonPicture = evt.target.classList.contains('picture');
+    var isClickInside = target.closest('.picture');
+    var id;
+
+    if (isClickonPicture) {
+      id = +evt.target.dataset.id;
+    } else if (isClickInside) {
+      id = +isClickInside.dataset.id;
+    }
+    if (id) {
+      var picture =
+      window.pictures.photosData.find(function (photo) {
+        return photo.id === id;
+      });
+      showBigPicture(picture);
+    }
+  });
+
+  containerOfPictures.addEventListener('click', function (evt) {
+    var target = evt.target;
+    var isClickonPicture = evt.target.classList.contains('picture');
+    var isClickInside = target.closest('.picture');
+    var id;
+
+    if (isClickonPicture) {
+      id = +evt.target.dataset.id;
+    } else if (isClickInside) {
+      id = +isClickInside.dataset.id;
+    }
+    if (id) {
+      var picture =
+      window.pictures.photosData.find(function (photo) {
+        return photo.id === id;
+      });
+      showBigPicture(picture);
+    }
+  });
 
   bigPictureCancel.addEventListener('keydown', function (evt) {
     if (evt.key === window.constants.ENTER_KEY) {
