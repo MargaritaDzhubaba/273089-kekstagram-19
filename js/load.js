@@ -6,11 +6,11 @@
   var STATUS = 200;
   var TIMEOUT = 10000;
 
-  var xhr = new XMLHttpRequest();
-  xhr.responseType = 'json';
-  xhr.timeout = TIMEOUT;
-
   var createRequest = function (data, onSuccess, onError, method, url) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.timeout = TIMEOUT;
+
     xhr.addEventListener('load', function () {
       if (xhr.status === STATUS) {
         onSuccess(xhr.response);
@@ -29,5 +29,5 @@
     xhr.send(data);
   };
 
-  window.upload = createRequest;
+  window.load = createRequest;
 })();
