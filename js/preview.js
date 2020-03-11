@@ -42,6 +42,26 @@
     return item;
   };
 
+  var openBigPicture = function (evt) {
+    var target = evt.target;
+    var isClickonPicture = evt.target.classList.contains('picture');
+    var isClickInside = target.closest('.picture');
+    var id;
+
+    if (evt.key === window.constants.ENTER_KEY && isClickonPicture) {
+      id = +evt.target.dataset.id;
+    } else if (evt.key === window.constants.ENTER_KEY && isClickInside) {
+      id = +isClickInside.dataset.id;
+    }
+    if (id) {
+      var picture =
+      window.pictures.photos.find(function (photo) { // window.render.photosData
+        return photo.id === id;
+      });
+      showBigPicture(picture);
+    }
+  };
+
   var closePopup = function () {
     bigPicture.classList.add('hidden');
     body.classList.remove('modal-open');
@@ -77,23 +97,9 @@
     }
   });
 
-  containerOfPictures.addEventListener('click', function (evt) {
-    var target = evt.target;
-    var isClickonPicture = evt.target.classList.contains('picture');
-    var isClickInside = target.closest('.picture');
-    var id;
-
-    if (isClickonPicture) {
-      id = +evt.target.dataset.id;
-    } else if (isClickInside) {
-      id = +isClickInside.dataset.id;
-    }
-    if (id) {
-      var picture =
-      window.pictures.photosData.find(function (photo) {
-        return photo.id === id;
-      });
-      showBigPicture(picture);
+  containerOfPictures.addEventListener('keydown', function (evt) {
+    if (evt.key === window.constants.ENTER_KEY) {
+      openBigPicture();
     }
   });
 
