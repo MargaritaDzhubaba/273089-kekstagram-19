@@ -35,7 +35,7 @@
     document.addEventListener('keydown', onPopupCloseByEscPress);
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
-    window.scale(DEFAULT_ZOOM_VALUE);
+    window.effects(DEFAULT_ZOOM_VALUE);
   };
 
   var closePopup = function () {
