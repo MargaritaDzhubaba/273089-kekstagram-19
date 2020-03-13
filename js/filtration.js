@@ -23,7 +23,7 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
-      fragment.appendChild(window.pictures.renderPicture(photos[i]));
+      fragment.appendChild(window.creationElements.renderPicture(photos[i]));
     }
     var galleryPhotos = document.querySelectorAll('.picture');
     galleryPhotos.forEach(function (item) {
@@ -36,7 +36,7 @@
     data.forEach(function (photo, index) {
       photo.id = index + 1;
     });
-    window.pictures.photosData = data;
+    window.creationElements.photosData = data;
     renderPhotos(data);
 
     filterDefault.addEventListener('click', window.util.debounce(function () {

@@ -2,16 +2,25 @@
 
 // effects.js
 (function () {
+  var STEP = 25;
+  var MIN = 25;
+  var MAX = 100;
   var DEFAULT_EFFECT_VALUE = 100;
   var DEFAULT_ZOOM_VALUE = 100;
   var EMPTY_FILTER = 'none';
+
+  var imgUploadScale = document.querySelector('.img-upload__scale');
+  var controlSmaller = imgUploadScale.querySelector('.scale__control--smaller');
+  var controlBigger = imgUploadScale.querySelector('.scale__control--bigger');
+  var controlValue = imgUploadScale.querySelector('.scale__control--value');
   var uploadImage = document.querySelector('div.img-upload__preview img');
   var effectDirectory = document.querySelector('.img-upload__effect-level');
-  var effectLevel = document.querySelector('.effect-level__value');
+  var effectLevel = effectDirectory.querySelector('.effect-level__value');
   var effectLine = effectDirectory.querySelector('.effect-level__line');
   var effectDepth = effectDirectory.querySelector('.effect-level__depth');
   var effectPin = effectDirectory.querySelector('.effect-level__pin');
-  var effectRadios = document.querySelectorAll('.effects__radio');
+  var effectsList = document.querySelector('.effects__list');
+  var effectRadios = effectsList.querySelectorAll('.effects__radio');
 
   var filters = {
     chrome: {
@@ -46,6 +55,28 @@
     }
   };
 
+  // Изменение масштаба
+  var zoomImage = function (zoomValue, direction) {
+    var innerValue = zoomValue;
+    if (direction === 'zoomOut' && zoomValue < MIN) {
+      innerValue = MIN;
+    }
+    if (direction === 'zoomIn' && zoomValue >= MAX) {
+      innerValue = MAX;
+    }
+    uploadImage.style.transform = 'scale(' + innerValue / 100 + ')';
+    controlValue.value = innerValue + '%';
+  };
+
+  zoomImage(MAX);
+
+  controlSmaller.addEventListener('click', function () {
+    zoomImage((parseInt(controlValue.value, 10) - STEP), 'zoomOut');
+  });
+  controlBigger.addEventListener('click', function () {
+    zoomImage((parseInt(controlValue.value, 10) + STEP), 'zoomIn');
+  });
+
   var calculatePinPosition = function (positionX, scaleWidth) {
     return Math.round(positionX * 100 / scaleWidth);
   };
@@ -73,7 +104,6 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      var effectsList = document.querySelector('.effects__list');
       var selectedEffect = effectsList.querySelector('.effects__radio:checked').value;
 
       var shiftX = startCoords - moveEvt.clientX;// вычисляем дельту
@@ -122,7 +152,7 @@
     effectDepth.style.width = DEFAULT_EFFECT_VALUE + '%';
     effectLevel.value = DEFAULT_EFFECT_VALUE;
 
-    window.scale(DEFAULT_ZOOM_VALUE);
+    zoomImage(DEFAULT_ZOOM_VALUE);
 
     uploadImage.className = '';
     uploadImage.classList.add('effects__preview--' + effectValue);
@@ -143,4 +173,6 @@
       changeEffect(evt.target.value);
     });
   }
+
+  window.effects = zoomImage;
 })();
