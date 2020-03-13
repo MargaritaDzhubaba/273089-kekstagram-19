@@ -1,7 +1,8 @@
 'use strict';
 
-// openingClosing.js
+// form.js
 (function () {
+  var DEFAULT_ZOOM_VALUE = 100;
   var formEditImage = document.querySelector('.img-upload__overlay');
   var fieldUploadImage = document.querySelector('#upload-file');
   var buttonCloseForm = document.querySelector('#upload-cancel');
@@ -34,15 +35,14 @@
     document.addEventListener('keydown', onPopupCloseByEscPress);
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
-    window.scale.zoomImage(100);
+    window.scale(DEFAULT_ZOOM_VALUE);
   };
 
   var closePopup = function () {
     formEditImage.classList.add('hidden');
     body.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupCloseByEscPress);
-    inputHashtag.value = '';
-    textDescription.value = '';
+    form.reset();
   };
 
   fieldUploadImage.addEventListener('change', function () {
@@ -56,4 +56,48 @@
   });
 
   fieldUploadImage.value = '';
+
+  var main = document.querySelector('main');
+  var form = main.querySelector('.img-upload__form');
+  var submitButton = main.querySelector('.img-upload__submit');
+
+  var successTemplate = document.querySelector('#success')
+    .content
+    .querySelector('.success');
+  var errorTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+
+  var onSuccess = function () {
+    formEditImage.classList.add('hidden');
+    var success = successTemplate.cloneNode(true);
+    form.reset();
+    main.appendChild(success);
+    submitButton.disabled = false;
+    success.querySelector('.success__button').addEventListener('click', function () {
+      textDescription.value = '';
+      inputHashtag.value = '';
+      success.remove();
+    });
+  };
+
+  var onError = function () {
+    formEditImage.classList.add('hidden');
+    var error = errorTemplate.cloneNode(true);
+    form.reset();
+    main.appendChild(error);
+    submitButton.disabled = false;
+    error.querySelector('.error__button').addEventListener('click', function () {
+      textDescription.value = '';
+      inputHashtag.value = '';
+      error.remove();
+    });
+  };
+
+  form.addEventListener('submit', function (e) {
+    submitButton.disabled = true;
+    window.load(new FormData(form), onSuccess, onError, 'POST', 'https://js.dump.academy/kekstagram');
+    e.preventDefault();
+  });
+
 })();

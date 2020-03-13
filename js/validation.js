@@ -4,6 +4,7 @@
 (function () {
   var MAX_SYMBOLS = 20;
   var MAX_HASHTAGS = 5;
+  var MAX_COMMENT_LENGTH = 140;
 
   var inputHashtag = document.querySelector('.text__hashtags');
 
@@ -77,5 +78,16 @@
     }
 
     target.setCustomValidity(invalidMessage.join('\n'));
+  });
+
+  var textDescription = document.querySelector('.text__description');
+
+  textDescription.addEventListener('input', function (evt) {
+    var target = evt.target;
+    if (target.value.length > MAX_COMMENT_LENGTH) {
+      target.setCustomValidity('Комментарий не должен быть длиннее ' + MAX_COMMENT_LENGTH + '-х символов');
+    } else {
+      target.setCustomValidity('');
+    }
   });
 })();
