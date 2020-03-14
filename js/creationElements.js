@@ -1,6 +1,6 @@
 'use strict';
 
-// pictures.js
+// creationElements.js
 (function () {
 
   var imgFilters = document.querySelector('.img-filters');
@@ -39,7 +39,7 @@
     return commentElement;
   };
 
-  window.pictures = {
+  window.creationElements = {
     renderPicture: renderPicture,
     renderComment: renderComment
   };

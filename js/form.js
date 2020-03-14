@@ -3,14 +3,14 @@
 // form.js
 (function () {
   var DEFAULT_ZOOM_VALUE = 100;
-  var formEditImage = document.querySelector('.img-upload__overlay');
-  var fieldUploadImage = document.querySelector('#upload-file');
-  var buttonCloseForm = document.querySelector('#upload-cancel');
   var body = document.querySelector('body');
-  var uploadImage = document.querySelector('div.img-upload__preview img');
-  var effectDirectory = document.querySelector('.img-upload__effect-level');
-  var inputHashtag = document.querySelector('input[name=hashtags]');
-  var textDescription = document.querySelector('.text__description');
+  var fieldUploadImage = body.querySelector('#upload-file');
+  var formEditImage = body.querySelector('.img-upload__overlay');
+  var buttonCloseForm = formEditImage.querySelector('#upload-cancel');
+  var uploadImage = formEditImage.querySelector('div.img-upload__preview img');
+  var effectDirectory = formEditImage.querySelector('.img-upload__effect-level');
+  var inputHashtag = formEditImage.querySelector('.text__hashtags');
+  var textDescription = formEditImage.querySelector('.text__description');
 
   var onPopupCloseByEscPress = function (evt) {
     if (evt.key === window.constants.ESC_KEY && inputHashtag !== document.activeElement && textDescription !== document.activeElement) {
@@ -35,7 +35,7 @@
     document.addEventListener('keydown', onPopupCloseByEscPress);
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
-    window.scale(DEFAULT_ZOOM_VALUE);
+    window.effects(DEFAULT_ZOOM_VALUE);
   };
 
   var closePopup = function () {

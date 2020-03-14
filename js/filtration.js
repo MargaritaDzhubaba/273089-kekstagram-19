@@ -10,12 +10,20 @@
   var filterRandom = imgFilters.querySelector('#filter-random');
   var filterDiscussed = imgFilters.querySelector('#filter-discussed');
 
+  filtersButton.forEach(function (evt) {
+    evt.addEventListener('click', function () {
+      var activeButton = imgFilters.querySelector('.img-filters__button--active');
+      activeButton.classList.remove('img-filters__button--active');
+      evt.classList.add('img-filters__button--active');
+    });
+  });
+
   var renderPhotos = function (photos) {
     var containerOfPictures = document.querySelector('.pictures');
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < photos.length; i++) {
-      fragment.appendChild(window.pictures.renderPicture(photos[i]));
+      fragment.appendChild(window.creationElements.renderPicture(photos[i]));
     }
     var galleryPhotos = document.querySelectorAll('.picture');
     galleryPhotos.forEach(function (item) {
@@ -24,26 +32,15 @@
     containerOfPictures.appendChild(fragment);
   };
 
-  var removeClass = function () {
-    filtersButton.forEach(function (item) {
-      if (item.classList.contains('img-filters__button--active')) {
-        item.classList.remove('img-filters__button--active');
-      }
-    });
-  };
-
   var onSuccess = function (data) {
     data.forEach(function (photo, index) {
       photo.id = index + 1;
     });
-    window.pictures.photosData = data;
+    window.creationElements.photosData = data;
     renderPhotos(data);
 
     filterDefault.addEventListener('click', window.util.debounce(function () {
       renderPhotos(data);
-
-      removeClass();
-      filterDefault.classList.add('img-filters__button--active');
     }));
 
     filterRandom.addEventListener('click', window.util.debounce(function () {
@@ -51,9 +48,6 @@
         return window.util.getRundomNumber(data.length);
       });
       renderPhotos(photosRandom);
-
-      removeClass();
-      filterRandom.classList.add('img-filters__button--active');
     }));
 
     filterDiscussed.addEventListener('click', window.util.debounce(function () {
@@ -67,9 +61,6 @@
         }
       });
       renderPhotos(photosDiscussed);
-
-      removeClass();
-      filterDiscussed.classList.add('img-filters__button--active');
     }));
   };
 
