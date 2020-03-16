@@ -1,6 +1,7 @@
 'use strict';
 
-// creationElements.js
+// elementsCreation.js
+
 (function () {
 
   var imgFilters = document.querySelector('.img-filters');
