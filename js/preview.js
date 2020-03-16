@@ -19,12 +19,11 @@
   var createComment = function (comments) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < comments.length; i++) {
-      fragment.appendChild(window.creationElements.renderComment(comments[i]));
+      fragment.appendChild(window.elementsCreation.renderComment(comments[i]));
     }
     socialComments.appendChild(fragment);
   };
 
-  // показываем необходимое количество комментариев.
   var generateCommentWithStep = function (comments) {
     var commentsList = comments.slice(count, STEP + count);
     count += STEP;
@@ -68,26 +67,6 @@
     return item;
   };
 
-  var openBigPicture = function (evt) {
-    var target = evt.target;
-    var isClickonPicture = evt.target.classList.contains('picture');
-    var isClickInside = target.closest('.picture');
-    var id;
-
-    if (evt.key === window.constants.ENTER_KEY && isClickonPicture) {
-      id = +evt.target.dataset.id;
-    } else if (evt.key === window.constants.ENTER_KEY && isClickInside) {
-      id = +isClickInside.dataset.id;
-    }
-    if (id) {
-      var picture =
-      window.creationElements.photosData.find(function (photo) {
-        return photo.id === id;
-      });
-      showBigPicture(picture);
-    }
-  };
-
   var closePopup = function () {
     bigPicture.classList.add('hidden');
     body.classList.remove('modal-open');
@@ -116,7 +95,7 @@
     }
     if (id) {
       var picture =
-      window.creationElements.photosData.find(function (photo) {
+      window.elementsCreation.photosData.find(function (photo) {
         return photo.id === id;
       });
       showBigPicture(picture);
@@ -124,8 +103,16 @@
   });
 
   containerOfPictures.addEventListener('keydown', function (evt) {
-    if (evt.key === window.constants.ENTER_KEY) {
-      openBigPicture();
+    var id;
+    if (evt.key === window.constants.ENTER_KEY && evt.target.classList.contains('picture')) {
+      id = +evt.target.dataset.id;
+    }
+    if (id) {
+      var picture =
+      window.elementsCreation.photosData.find(function (photo) {
+        return photo.id === id;
+      });
+      showBigPicture(picture);
     }
   });
 
