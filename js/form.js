@@ -19,11 +19,6 @@
     }
   };
 
-  var onButtonCloseClick = function (evt) {
-    var target = evt.target.closest('section');
-    closePopup(target);
-  };
-
   fieldUploadImage.addEventListener('keydown', function (evt) {
     if (evt.key === window.constants.ENTER_KEY) {
       openPopup();
@@ -60,8 +55,6 @@
     body.classList.remove('modal-open');
     closePopup();
   });
-
-  document.addEventListener('click', onButtonCloseClick);
 
   fieldUploadImage.value = '';
 
