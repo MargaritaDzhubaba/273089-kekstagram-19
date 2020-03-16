@@ -1,6 +1,7 @@
 'use strict';
 
 // form.js
+
 (function () {
   var DEFAULT_ZOOM_VALUE = 100;
   var body = document.querySelector('body');
@@ -16,6 +17,11 @@
     if (evt.key === window.constants.ESC_KEY && inputHashtag !== document.activeElement && textDescription !== document.activeElement) {
       closePopup();
     }
+  };
+
+  var onButtonCloseClick = function (evt) {
+    var target = evt.target.closest('section');
+    closePopup(target);
   };
 
   fieldUploadImage.addEventListener('keydown', function (evt) {
@@ -54,6 +60,8 @@
     body.classList.remove('modal-open');
     closePopup();
   });
+
+  document.addEventListener('click', onButtonCloseClick);
 
   fieldUploadImage.value = '';
 
@@ -100,4 +108,5 @@
     e.preventDefault();
   });
 
+  window.form = openPopup;
 })();
