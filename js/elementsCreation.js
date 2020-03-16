@@ -40,7 +40,7 @@
     return commentElement;
   };
 
-  window.creationElements = {
+  window.elementsCreation = {
     renderPicture: renderPicture,
     renderComment: renderComment
   };
