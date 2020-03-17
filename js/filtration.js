@@ -64,9 +64,9 @@
   var filterPhotos = window.util.debounce(function (evt) {
     var target = evt.target;
 
-    if (target.id === 'filter-default') {
-      filterPhotos = filterDefault();
-    } else if (target.id === 'filter-random') {
+    filterPhotos = filterDefault();
+
+    if (target.id === 'filter-random') {
       filterPhotos = filterRandom();
     } else if (target.id === 'filter-discussed') {
       filterPhotos = filterDiscussed();
