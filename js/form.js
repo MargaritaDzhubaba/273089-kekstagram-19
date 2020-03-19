@@ -13,10 +13,26 @@
   var inputHashtag = formEditImage.querySelector('.text__hashtags');
   var textDescription = formEditImage.querySelector('.text__description');
 
+  var main = document.querySelector('main');
+  var form = main.querySelector('.img-upload__form');
+  var submitButton = main.querySelector('.img-upload__submit');
+
   var onPopupCloseByEscPress = function (evt) {
     if (evt.key === window.constants.ESC_KEY && inputHashtag !== document.activeElement && textDescription !== document.activeElement) {
       closePopup();
     }
+  };
+
+  var onAlertCloseByEscPress = function (evt) {
+    if (evt.key === window.constants.ESC_KEY) {
+      var container = evt.target.querySelector('.success', '.error');
+      closeAlert(container);
+    }
+  };
+
+  var onButtonCloseClick = function (evt) {
+    var container = evt.target.closest('section');
+    closeAlert(container);
   };
 
   fieldUploadImage.addEventListener('keydown', function (evt) {
@@ -46,6 +62,12 @@
     form.reset();
   };
 
+  var closeAlert = function (element) {
+    element.remove();
+    document.removeEventListener('keydown', onAlertCloseByEscPress);
+    document.removeEventListener('click', onButtonCloseClick);
+  };
+
   fieldUploadImage.addEventListener('change', function () {
     body.classList.add('modal-open');
     openPopup();
@@ -57,10 +79,6 @@
   });
 
   fieldUploadImage.value = '';
-
-  var main = document.querySelector('main');
-  var form = main.querySelector('.img-upload__form');
-  var submitButton = main.querySelector('.img-upload__submit');
 
   var successTemplate = document.querySelector('#success')
     .content
@@ -75,11 +93,14 @@
     form.reset();
     main.appendChild(success);
     submitButton.disabled = false;
+    inputHashtag.value = '';
+    textDescription.value = '';
+
     success.querySelector('.success__button').addEventListener('click', function () {
-      textDescription.value = '';
-      inputHashtag.value = '';
       success.remove();
     });
+    document.addEventListener('keydown', onAlertCloseByEscPress);
+    document.addEventListener('click', onButtonCloseClick);
   };
 
   var onError = function () {
@@ -88,11 +109,14 @@
     form.reset();
     main.appendChild(error);
     submitButton.disabled = false;
+    inputHashtag.value = '';
+    textDescription.value = '';
+
     error.querySelector('.error__button').addEventListener('click', function () {
-      textDescription.value = '';
-      inputHashtag.value = '';
       error.remove();
     });
+    document.addEventListener('keydown', onAlertCloseByEscPress);
+    document.addEventListener('click', onButtonCloseClick);
   };
 
   form.addEventListener('submit', function (e) {

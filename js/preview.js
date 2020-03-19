@@ -4,6 +4,8 @@
 
 (function () {
   // просмотр фотографий в полноразмерном режиме
+  var STEP = 5;
+
   var body = document.querySelector('body');
   var bigPicture = document.querySelector('.big-picture');
   var bigPictureCancel = document.querySelector('.big-picture__cancel');
@@ -13,7 +15,7 @@
   var commentsLoader = document.querySelector('.comments-loader');
   var socialCommentCount = document.querySelector('.social__comment-count');
   var commentsCount = bigPicture.querySelector('.comments-count');
-  var STEP = 5;
+  // var imgFilters = document.querySelector('.img-filters');
   var count = 0;
 
   var createComment = function (comments) {
@@ -63,6 +65,8 @@
     bigPicture.classList.remove('hidden');
     body.classList.add('modal-open');
     document.addEventListener('keydown', onPopupCloseByEscPress);
+
+    // imgFilters.classList.remove('img-filters--inactive'); // вот сюда добавила
 
     return item;
   };
