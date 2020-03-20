@@ -53,6 +53,7 @@
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
     window.effectsApplying(DEFAULT_ZOOM_VALUE);
+    inputHashtag.style = 'border: none';
   };
 
   var closePopup = function () {
@@ -61,7 +62,6 @@
     document.removeEventListener('keydown', onPopupCloseByEscPress);
     form.reset();
     inputHashtag.setCustomValidity('');
-    inputHashtag.value = '';
   };
 
   var closeAlert = function (element) {
