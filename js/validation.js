@@ -36,9 +36,9 @@
       var isNoSpaceInHash = inputArrays[i].indexOf('#', 1) >= 1;
       var isSomeSpecialSymbols = inputArrays[i].slice(1).match(/^[a-zA-Z0-9а-яА-Я]+$/);
       var isRepeatHashing = inputArrays.indexOf(inputArrays[i], inputArrays[1]) >= inputArrays[1]; // У меня не получается указать индекс, с которого надо начинать поиск идентичного хештега
-      // console.log(inputArrays);
-      // console.log(inputArrays[i]);
-      // console.log(inputArrays[1]);
+      // console.log(inputArrays); массив, который перебираем
+      // console.log(inputArrays[i]); элемент, который ищем
+      // console.log(inputArrays[i + 1]); элемент, с которого начинаем поиски
     }
 
     if (isRepeatHashing) {
