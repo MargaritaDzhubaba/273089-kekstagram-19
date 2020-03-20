@@ -48,6 +48,12 @@
     }
   });
 
+  var popupReset = function () {
+    form.reset();
+    inputHashtag.setCustomValidity('');
+    textDescription.setCustomValidity('');
+  };
+
   var openPopup = function () {
     formEditImage.classList.remove('hidden');
     document.addEventListener('keydown', onPopupCloseByEscPress);
@@ -62,13 +68,12 @@
     formEditImage.classList.add('hidden');
     body.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupCloseByEscPress);
-    form.reset();
-    inputHashtag.setCustomValidity('');
-    textDescription.setCustomValidity('');
+    popupReset();
   };
 
   var closeAlert = function (element) {
     element.remove();
+    body.classList.remove('modal-open');
     document.removeEventListener('keydown', onAlertCloseByEscPress);
     document.removeEventListener('click', onButtonCloseClick);
   };
@@ -95,9 +100,9 @@
   var onSuccess = function () {
     formEditImage.classList.add('hidden');
     var success = successTemplate.cloneNode(true);
-    form.reset();
     main.appendChild(success);
     submitButton.disabled = false;
+    popupReset();
 
     success.querySelector('.success__button').addEventListener('click', function () {
       success.remove();
@@ -109,11 +114,9 @@
   var onError = function () {
     formEditImage.classList.add('hidden');
     var error = errorTemplate.cloneNode(true);
-    form.reset();
     main.appendChild(error);
     submitButton.disabled = false;
-    inputHashtag.value = '';
-    textDescription.value = '';
+    popupReset();
 
     error.querySelector('.error__button').addEventListener('click', function () {
       error.remove();

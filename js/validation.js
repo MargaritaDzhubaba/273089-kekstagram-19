@@ -26,6 +26,10 @@
     target.setCustomValidity('');
     inputHashtag.style = (DEFAULT_STYLE_VALIDATION_INPUT);
 
+    if (!inputText.length) {
+      return;
+    }
+
     if (tags.length === 0) {
       return;
     }
