@@ -15,7 +15,6 @@
   var commentsLoader = document.querySelector('.comments-loader');
   var socialCommentCount = document.querySelector('.social__comment-count');
   var commentsCount = bigPicture.querySelector('.comments-count');
-  // var imgFilters = document.querySelector('.img-filters');
   var count = 0;
 
   var createComment = function (comments) {
@@ -57,17 +56,15 @@
     count = 0;
     generateCommentWithStep(item.comments);
 
-    var onCommentsLoaderClick = window.util.debounce(function () {
+    window.prewiew.onCommentsLoaderClick = window.util.debounce(function () {
       generateCommentWithStep(item.comments);
     });
 
-    commentsLoader.addEventListener('click', onCommentsLoaderClick);
+    commentsLoader.addEventListener('click', window.prewiew.onCommentsLoaderClick);
 
     bigPicture.classList.remove('hidden');
     body.classList.add('modal-open');
     document.addEventListener('keydown', onPopupCloseByEscPress);
-
-    // imgFilters.classList.remove('img-filters--inactive'); // вот сюда добавила
 
     return item;
   };
@@ -76,6 +73,7 @@
     bigPicture.classList.add('hidden');
     body.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupCloseByEscPress);
+    commentsLoader.removeEventListener('click', window.prewiew.onCommentsLoaderClick);
     inputComment.value = '';
   };
 
