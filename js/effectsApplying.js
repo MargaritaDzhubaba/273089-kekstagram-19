@@ -1,6 +1,6 @@
 'use strict';
 
-// effects.js
+// effectsApplying.js
 (function () {
   var STEP = 25;
   var MIN = 25;
@@ -174,5 +174,5 @@
     });
   }
 
-  window.effects = zoomImage;
+  window.effectsApplying = zoomImage;
 })();

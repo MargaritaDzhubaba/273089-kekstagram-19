@@ -1,6 +1,6 @@
 'use strict';
 
-// form.js
+// interactWithForm.js
 
 (function () {
   var DEFAULT_ZOOM_VALUE = 100;
@@ -52,7 +52,7 @@
     document.addEventListener('keydown', onPopupCloseByEscPress);
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
-    window.effects(DEFAULT_ZOOM_VALUE);
+    window.effectsApplying(DEFAULT_ZOOM_VALUE);
   };
 
   var closePopup = function () {
@@ -60,6 +60,8 @@
     body.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupCloseByEscPress);
     form.reset();
+    inputHashtag.setCustomValidity('');
+    inputHashtag.value = '';
   };
 
   var closeAlert = function (element) {
@@ -93,8 +95,6 @@
     form.reset();
     main.appendChild(success);
     submitButton.disabled = false;
-    inputHashtag.value = '';
-    textDescription.value = '';
 
     success.querySelector('.success__button').addEventListener('click', function () {
       success.remove();
@@ -125,5 +125,5 @@
     e.preventDefault();
   });
 
-  window.form = openPopup;
+  window.interactWithForm = openPopup;
 })();
