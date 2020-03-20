@@ -4,6 +4,7 @@
 
 (function () {
   var DEFAULT_ZOOM_VALUE = 100;
+  var DEFAULT_STYLE_VALIDATION_INPUT = 'border: none';
   var body = document.querySelector('body');
   var fieldUploadImage = body.querySelector('#upload-file');
   var formEditImage = body.querySelector('.img-upload__overlay');
@@ -53,7 +54,8 @@
     uploadImage.style.filter = window.constants.DEFAULT_FILTER;
     effectDirectory.classList.add('hidden');
     window.effectsApplying(DEFAULT_ZOOM_VALUE);
-    inputHashtag.style = 'border: none';
+    inputHashtag.style = (DEFAULT_STYLE_VALIDATION_INPUT);
+    textDescription.style = (DEFAULT_STYLE_VALIDATION_INPUT);
   };
 
   var closePopup = function () {
@@ -62,6 +64,7 @@
     document.removeEventListener('keydown', onPopupCloseByEscPress);
     form.reset();
     inputHashtag.setCustomValidity('');
+    textDescription.setCustomValidity('');
   };
 
   var closeAlert = function (element) {
