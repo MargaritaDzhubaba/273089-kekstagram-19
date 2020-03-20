@@ -35,6 +35,8 @@
     });
     window.elementsCreation.photosData = data;
     renderPhotos(data);
+
+    imgFilters.classList.remove('img-filters--inactive');
   };
 
   var filterDefault = function () {

@@ -31,7 +31,7 @@
       });
 
       reader.readAsDataURL(file);
-      window.form();
+      window.interactWithForm();
     } else {
       var node = document.createElement('div');
 

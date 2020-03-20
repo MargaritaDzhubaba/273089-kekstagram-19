@@ -20,9 +20,10 @@
 
   var createComment = function (comments) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < comments.length; i++) {
-      fragment.appendChild(window.elementsCreation.renderComment(comments[i]));
-    }
+    comments.forEach(function (item) {
+      fragment.appendChild(window.elementsCreation.renderComment(item));
+    });
+
     socialComments.appendChild(fragment);
   };
 
