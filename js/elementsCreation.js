@@ -4,7 +4,6 @@
 
 (function () {
 
-  var imgFilters = document.querySelector('.img-filters');
   var similarPictureTemplate = document.querySelector('#picture')
     .content
     .querySelector('.picture');
@@ -21,7 +20,6 @@
     pictureComments.textContent = picture.comments.length;
     pictureElement.dataset.id = picture.id;
 
-    imgFilters.classList.remove('img-filters--inactive');
     return pictureElement;
   };
 
