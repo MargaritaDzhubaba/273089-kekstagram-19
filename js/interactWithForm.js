@@ -127,7 +127,7 @@
 
   form.addEventListener('submit', function (e) {
     submitButton.disabled = true;
-    window.load(new FormData(form), onSuccess, onError, 'POST', 'https://js.dump.academy/kekstagram');
+    window.load(new FormData(form), onSuccess, onError, 'POST', 'https://javascript.pages.academy/kekstagram');
     e.preventDefault();
   });
 
