@@ -95,6 +95,6 @@
     });
   };
 
-  window.load('', onSuccess, onError, 'GET', 'https://js.dump.academy/kekstagram/data');
+  window.load('', onSuccess, onError, 'GET', 'https://javascript.pages.academy/kekstagram/data');
 
 })();
